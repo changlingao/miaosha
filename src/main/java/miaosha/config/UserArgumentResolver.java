@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 
+// amazing way to insert customized argument
 @Service
 public class UserArgumentResolver implements HandlerMethodArgumentResolver {
     @Autowired
