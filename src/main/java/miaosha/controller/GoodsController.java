@@ -43,6 +43,9 @@ public class GoodsController {
 //        return "goods_list";
 //    }
 
+    /*
+    Jmeter: QPS: 5000 with 4w threads, cannot deal with 5w... db connection pool?
+     */
     // so neat man
     @RequestMapping("/to_list")
     public String list(Model model, MiaoshaUser user) {

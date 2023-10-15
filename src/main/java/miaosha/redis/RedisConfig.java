@@ -13,15 +13,15 @@ import org.springframework.stereotype.Component;
 @Component
 @EnableMBeanExport(registration = RegistrationPolicy.IGNORE_EXISTING) // bug fix register bean twice
 //@ConfigurationProperties(prefix="spring.data.redis")
-public class RedisConfig {
+public class  RedisConfig {
     // config manually due to name difference
     private String host = "localhost";
     private int port = 6379;
-    private int timeout = 3;//秒
+    private int timeout = 10;//秒
 
-    private int poolMaxTotal = 10;
-    private int poolMaxIdle = 10;
-    private int poolMaxWait = 3;//秒
+    private int poolMaxTotal = 1000;
+    private int poolMaxIdle = 500;
+    private int poolMaxWait = 500;//秒
 
     public String getHost() {
         return host;

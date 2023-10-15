@@ -43,13 +43,17 @@ public class MiaoshaController {
     @Autowired
     MiaoshaService miaoshaService;
 
+    /*
+    QPS: 5000
+    4000 0
+     */
     @RequestMapping("/do_miaosha")
     public String list(Model model, MiaoshaUser user, @RequestParam("goodsId") Long goodsId) {
         model.addAttribute("user", user);
         if (user == null) {
             return "login";
         }
-
+        // when stock is 1 needs a lock!
     	//判断库存
     	GoodsVo goods = goodsService.getGoodsVoByGoodsId(goodsId);
     	int stock = goods.getStockCount();

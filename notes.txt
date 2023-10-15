@@ -87,3 +87,17 @@ UPDATE miaosha_goods
 SET start_date = '2023-10-13 10:00:00',
     end_date = '2023-10-15 10:00:00'
 WHERE id = 2;
+
+
+4 Jmeter
+cd /opt/homebrew/Cellar/jmeter/5.6.2/bin
+./jmeter
+
+to see system usage: terminal: top
+mysql is the bottleneck
+
+jar:
+mvn clean package
+java -jar miaosha.jar
+
+war: move miaosha.war to tomecat.....
