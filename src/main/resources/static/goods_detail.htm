@@ -63,8 +63,8 @@
         	</form>-->
         	<div class="row">
         		<div class="form-inline">
-		        	<img id="verifyCodeImg" width="80" height="32"  style="display:none" onclick="refreshVerifyCode()"/>
-		        	<input id="verifyCode"  class="form-control" style="display:none"/>
+<!--		        	<img id="verifyCodeImg" width="80" height="32"  style="display:none" onclick="refreshVerifyCode()"/>-->
+<!--		        	<input id="verifyCode"  class="form-control" style="display:none"/>-->
 		        	<button class="btn btn-primary" type="button" id="buyButton"onclick="getMiaoshaPath()">立即秒杀</button>
         		</div>
         	</div>
@@ -96,7 +96,7 @@ function getMiaoshaPath(){
 		type:"GET",
 		data:{
 			goodsId:goodsId,
-			verifyCode:$("#verifyCode").val()
+			// verifyCode:$("#verifyCode").val()
 		},
 		success:function(data){
 			if(data.code == 0){
@@ -229,18 +229,18 @@ function countDown(){
 			clearTimeout(timeout);
 		}
 		$("#miaoshaTip").html("秒杀进行中");
-		$("#verifyCodeImg").attr("src", "/miaosha/verifyCode?goodsId="+$("#goodsId").val());
-		$("#verifyCodeImg").show();
-		$("#verifyCode").show();
+		// $("#verifyCodeImg").attr("src", "/miaosha/verifyCode?goodsId="+$("#goodsId").val());
+		// $("#verifyCodeImg").show();
+		// $("#verifyCode").show();
 	}else{//秒杀已经结束
 		$("#buyButton").attr("disabled", true);
 		$("#miaoshaTip").html("秒杀已经结束");
-		$("#verifyCodeImg").hide();
-		$("#verifyCode").hide();
+		// $("#verifyCodeImg").hide();
+		// $("#verifyCode").hide();
 	}
 }
-function refreshVerifyCode(){
-	$("#verifyCodeImg").attr("src", "/miaosha/verifyCode?goodsId="+$("#goodsId").val()+"&timestamp="+new Date().getTime());
-}
+// function refreshVerifyCode(){
+// 	$("#verifyCodeImg").attr("src", "/miaosha/verifyCode?goodsId="+$("#goodsId").val()+"&timestamp="+new Date().getTime());
+// }
 </script>
 </html>

@@ -84,9 +84,13 @@ CREATE TABLE `miaosha_order` (
 
 // set miaosha time to 2023 for testing
 UPDATE miaosha_goods
-SET start_date = '2023-10-13 10:00:00',
-    end_date = '2023-10-15 10:00:00'
-WHERE id = 2;
+SET start_date = '2023-10-15 10:00:00',
+    end_date = '2023-10-18 10:00:00'
+WHERE id = 1;
+
+UPDATE miaosha_goods
+SET stock_count = 10
+WHERE id = 1;
 
 
 4 Jmeter

@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -44,14 +45,15 @@ public class MiaoshaController {
     MiaoshaService miaoshaService;
 
     /*
-    QPS: 5000
-    4000 0
+    before object cache: QPS: 5000, threads: 40000
+    after: QPS: 5000*2
      */
-    @RequestMapping("/do_miaosha")
-    public String list(Model model, MiaoshaUser user, @RequestParam("goodsId") Long goodsId) {
+    @RequestMapping(value="/do_miaosha", method = RequestMethod.POST)
+    @ResponseBody
+    public Result<OrderInfo> list(Model model, MiaoshaUser user, @RequestParam("goodsId") Long goodsId) {
         model.addAttribute("user", user);
         if (user == null) {
-            return "login";
+            return Result.error(CodeMsg.SESSION_ERROR);
         }
         // when stock is 1 needs a lock!
     	//判断库存
@@ -59,19 +61,19 @@ public class MiaoshaController {
     	int stock = goods.getStockCount();
     	if(stock <= 0) {
             model.addAttribute("errmsg", CodeMsg.MIAO_SHA_OVER.getMsg());
-            return "miaosha_fail";
+            return Result.error(CodeMsg.MIAO_SHA_OVER);
     	}
     	//判断是否已经秒杀到了
     	MiaoshaOrder order = orderService.getMiaoshaOrderByUserIdGoodsId(user.getId(), goodsId);
     	if(order != null) {
             model.addAttribute("errmsg", CodeMsg.REPEATE_MIAOSHA.getMsg());
-            return "miaosha_fail";
+            return Result.error(CodeMsg.REPEATE_MIAOSHA);
     	}
     	//事务：减库存 下订单 写入秒杀订单
     	OrderInfo orderInfo = miaoshaService.miaosha(user, goods);
-        model.addAttribute("orderInfo", orderInfo);
-        model.addAttribute("goods", goods);
-        return "order_detail";
+//        model.addAttribute("orderInfo", orderInfo);
+//        model.addAttribute("goods", goods);
+        return Result.success(orderInfo); 
     }
 }
 
