@@ -1,6 +1,7 @@
 package miaosha.controller;
 
 import miaosha.domain.User;
+import miaosha.rabbitmq.MQSender;
 import miaosha.redis.RedisService;
 import miaosha.redis.UserKey;
 import miaosha.result.Result;
@@ -63,6 +64,23 @@ public class SampleController {
         user.setId(1);
         user.setName("1111");
         redisService.set(UserKey.getById, ""+1, user); // UserKey:id1
+        return Result.success(true);
+    }
+
+    @Autowired
+    MQSender sender;
+
+    @GetMapping("/mq")
+    @ResponseBody
+    public Result<Boolean> mq(){
+        sender.send("hello world");
+        return Result.success(true);
+    }
+
+    @GetMapping("/mq/topic")
+    @ResponseBody
+    public Result<Boolean> mqtopic(){
+        sender.send("hello");
         return Result.success(true);
     }
 

@@ -1,107 +1,31 @@
-1
-connect to my database
-mysql -u root -p
-create database miaosha
+process in a request
 
-CREATE TABLE user (
-  id int(11) NOT NULL,
-  name varchar(24) DEFAULT NULL,
-  PRIMARY KEY (id)
-)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+1. Session Initialization: When a user visits a website, the web server generates a unique session ID for that user's session.
 
-before can run the app
-connect to redis in terminal: redis-server
+2. Cookie Creation: The web server sends a response to the user's browser, which includes a "Set-Cookie" header.
+                      "headers": {
+                        "Content-Type": "",
+                        "Set-Cookie": "sessionID=abc123; Expires=..; ...",
+                      },
+                      The browser then stores this cookie locally.
+3. Subsequent Requests: the browser automatically includes the session ID cookie in the headers.
+                      "headers": {
+                        "Cookie": "sessionID=abc123; Expires=..; ...",
+                      },
+4. Server-Side: The server uses the sessionID to look up the associated user's session data,
+                set sessionID User; (store as JSON)
 
-
-2
-CREATE TABLE `miaosha_user` (
-  `id` bigint(20) NOT NULL COMMENT '用户ID，手机号码',
-  `nickname` varchar(255) NOT NULL,
-  `password` varchar(32) DEFAULT NULL COMMENT 'MD5(MD5(pass明文+固定salt) + salt)',
-  `salt` varchar(10) DEFAULT NULL,
-  `head` varchar(128) DEFAULT NULL COMMENT '头像，云存储的ID',
-  `register_date` datetime DEFAULT NULL COMMENT '注册时间',
-  `last_login_date` datetime DEFAULT NULL COMMENT '上蔟登录时间',
-  `login_count` int(11) DEFAULT '0' COMMENT '登录次数',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-input password: 123456, different than db pass
-INSERT INTO miaosha_user (id, nickname, password, salt)
-VALUES (16607350735, 'john', 'b7797cce01b4b131b433b6acf4add449', '1a2b3c4d');
-
-<form style="width=50%; margin=0 auto"></form?=>
-
-3.秒杀数据库设计
-CREATE TABLE `goods` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '商品ID',
-  `goods_name` varchar(16) DEFAULT NULL COMMENT '商品名称',
-  `goods_title` varchar(64) DEFAULT NULL COMMENT '商品标题',
-  `goods_img` varchar(64) DEFAULT NULL COMMENT '商品的图片',
-  `goods_detail` longtext COMMENT '商品的详情介绍',
-  `goods_price` decimal(10,2) DEFAULT '0.00' COMMENT '商品单价',
-  `goods_stock` int(11) DEFAULT '0' COMMENT '商品库存，-1表示没有限制',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
-
-INSERT INTO `goods` VALUES (1,'iphoneX','Apple iPhone X (A1865) 64GB 银色 移动联通电信4G手机','/img/iphonex.png','Apple iPhone X (A1865) 64GB 银色 移动联通电信4G手机',8765.00,10000),(2,'华为Meta9','华为 Mate 9 4GB+32GB版 月光银 移动联通电信4G手机 双卡双待','/img/meta10.png','华为 Mate 9 4GB+32GB版 月光银 移动联通电信4G手机 双卡双待',3212.00,-1);
-
-CREATE TABLE `miaosha_goods` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '秒杀的商品表',
-  `goods_id` bigint(20) DEFAULT NULL COMMENT '商品Id',
-  `miaosha_price` decimal(10,2) DEFAULT '0.00' COMMENT '秒杀价',
-  `stock_count` int(11) DEFAULT NULL COMMENT '库存数量',
-  `start_date` datetime DEFAULT NULL COMMENT '秒杀开始时间',
-  `end_date` datetime DEFAULT NULL COMMENT '秒杀结束时间',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
-
-INSERT INTO `miaosha_goods` VALUES (1,1,0.01,4,'2017-11-05 15:18:00','2017-11-13 14:00:18'),(2,2,0.01,9,'2017-11-12 14:00:14','2017-11-13 14:00:24');
+Redis: in-memory data store optimized for high-speed data access, caching, session management, real-time data processing
+MongoDB: NoSQL database for persistent storage like MySQL
 
 
-CREATE TABLE `order_info` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `user_id` bigint(20) DEFAULT NULL COMMENT '用户ID',
-  `goods_id` bigint(20) DEFAULT NULL COMMENT '商品ID',
-  `delivery_addr_id` bigint(20) DEFAULT NULL COMMENT '收获地址ID',
-  `goods_name` varchar(16) DEFAULT NULL COMMENT '冗余过来的商品名称',
-  `goods_count` int(11) DEFAULT '0' COMMENT '商品数量',
-  `goods_price` decimal(10,2) DEFAULT '0.00' COMMENT '商品单价',
-  `order_channel` tinyint(4) DEFAULT '0' COMMENT '1pc，2android，3ios',
-  `status` tinyint(4) DEFAULT '0' COMMENT '订单状态，0新建未支付，1已支付，2已发货，3已收货，4已退款，5已完成',
-  `create_date` datetime DEFAULT NULL COMMENT '订单的创建时间',
-  `pay_date` datetime DEFAULT NULL COMMENT '支付时间',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4;
+学了十天，决定到此为止了！10.12-10.20
+一开始是觉得自己的 spring boot 开发所知甚少，国内用的技术栈都好新鲜，大家都推荐学秒杀，于是就学了
+学得很认真：session, redis, jmeter
+以后用上再学：rabbitmq, tomcat, nginx
+一开始很感兴趣，真的学得很认真，每个功能都自己看一遍，其实项目很复杂，自己都解释不清所以一直在思考简历上放什么
+然后停止了两周因为作业太多，今天(11.2)突然捡起发现，不放在简历上就没有热情再学了
+相关知识根据面试题目再来背
 
-CREATE TABLE `miaosha_order` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `user_id` bigint(20) DEFAULT NULL COMMENT '用户ID',
-  `order_id` bigint(20) DEFAULT NULL COMMENT '订单ID',
-  `goods_id` bigint(20) DEFAULT NULL COMMENT '商品ID',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
-
-// set miaosha time to 2023 for testing
-UPDATE miaosha_goods
-SET start_date = '2023-10-15 10:00:00',
-    end_date = '2023-10-18 10:00:00'
-WHERE id = 1;
-
-UPDATE miaosha_goods
-SET stock_count = 10
-WHERE id = 1;
-
-
-4 Jmeter
-cd /opt/homebrew/Cellar/jmeter/5.6.2/bin
-./jmeter
-
-to see system usage: terminal: top
-mysql is the bottleneck
-
-jar:
-mvn clean package
-java -jar miaosha.jar
-
-war: move miaosha.war to tomecat.....
+最重要的是什么！就是我有底气了！有对 spring boot 的底气了！
+同样是不知道，以前是觉得自己欠好多，现在是觉得无所谓，都是我主动放弃的知识，现学现用，我之前已经学的够多了！
